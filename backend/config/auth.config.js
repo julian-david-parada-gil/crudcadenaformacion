@@ -6,7 +6,7 @@ module.exports={
     secret: process.env.JWT_SECRET || 
     "tusecretoparalostokens",
     // tiempo de expiracion del tokens en segundos
-    jwtExpiration: process.env.JWT_EXPIRATION ||
+    jwtExpiration: process.env.JWT_EXPIRATION || 
     86400, // 24 horas
     // tiempo de expiracion de refrescar token
     jwtRefresh:  6048000, // 7 dias
