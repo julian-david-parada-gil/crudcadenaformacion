@@ -95,7 +95,7 @@ exports.signin = async (req, res) => {
         //buscar el usuario por email o username
         const user = await User.findOne({
             $or: [
-                { username: req.body.username }
+                { username: req.body.username },
                 { email: req.body.email }
             ]
         }).select('+password'); // incluye password field
@@ -159,4 +159,4 @@ exports.signin = async (req, res) => {
             error: error.message
         });
     }
-}
+};
