@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
     name:{
         type: String,
         required: [true, 'El nombre es obligatorio'],
-        unique: true, // No pieden haber dos productos con el mismo nombre
+        unique: true, // No pueden haber dos productos con el mismo nombre
         trim: true // Eliminar espacios al inicio y al final
     },
 
