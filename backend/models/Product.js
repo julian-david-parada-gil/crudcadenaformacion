@@ -70,8 +70,7 @@ const productSchema = new mongoose.Schema({
 
     // Array de urls de imagenes de productos
     images: [{
-        type: Boolean,
-        default: true
+        type: String //url de la imagen
     }],
 
     // Active desactiva el producto pero no la elimina

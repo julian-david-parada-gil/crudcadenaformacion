@@ -42,15 +42,14 @@ exports.createProduct = async (req, res) => {
 
         // Validar que la categoria padre exista PEDIENTE
         // Verificar que todos los campos requeridos esten presentes
-        const categoryExist = await Category.findById(category);
-        if (!categoryExist) {
-            return res.status(404).json({
+        if (!name || !description || !price || !stock || !category || !subcategory) {
+            return res.status(400).json({
                 success: false,
-                message: 'La categoria solicitada no existe',
-                categoryId: category
+                message: 'todoslos campos son obligatorios',
+                requireFields: [ 'name', 'description', 'price', 'stock', 'category' , 'subcategory']
             });
-        }
-        // Validar que la subcategoria padre exista y pertenece a la categoria especificada
+        };
+        // Validar que la subcategoria padre exista y pertenece a la categoria especificada 
         const subcategoryExist = await Subcategory.findById({
                 _id: subcategory,
                 category: category
@@ -66,6 +65,7 @@ exports.createProduct = async (req, res) => {
         const product = new Products({
             name,
             description,
+            price,
             stock,
             category,
             subcategory

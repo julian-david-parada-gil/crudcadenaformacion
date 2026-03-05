@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlenght: 9,
+        minlenght: 6,
         select: false // no incluir en resultados por defecto
     },
     // rol del usuario restringe valores especificos
@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
     },
 }, {
     timestamps: true, //agrega createdAt y updatedAt automaticamente
-    versionkey: flase //no incluir __v en el control de versiones de Mongoose
+    versionkey: false //no incluir __v en el control de versiones de Mongoose
 });
 
 // Middleware encripta la contraseña antes de guardar el usuario
