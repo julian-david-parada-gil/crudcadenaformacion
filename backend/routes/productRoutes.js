@@ -14,7 +14,7 @@ const express = require('express');
 const router =express.Router();
 const productController = require('../Controllers/productController');
 const { check } = require('express-validator');
-const { verifyToken } = require('../midleswares/auhJwt');
+const { verifyToken } = require('../middleswares/authJwt');
 const {checkRole} = require('../middlewares/Role');
 
 const validateProduct = [
@@ -51,6 +51,10 @@ router.post('/',
     validateProduct,
     productController.createProduct
 );
+
+router.get('/',
+    verifyToken,
+    productController.getProducts);
 
 router.get('/', productController.getProducts);
 
