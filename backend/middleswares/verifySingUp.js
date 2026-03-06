@@ -54,7 +54,7 @@ const chedkDuplicateUsernameOrEmail = async (req, res, next) => {
                 { email: req.body.email}
             ]
         }) .exec();
-        // Si encuentra un suario retornar error
+        // Si encuentra un usuario retornar error
         if (user) {
             return res.status(400).json({
                 success: false,
@@ -69,7 +69,7 @@ const chedkDuplicateUsernameOrEmail = async (req, res, next) => {
         success: false,
         message: "Error al verificar credenciales",
         error: err.message
-      });
+    });
     }
 };
 /**
@@ -96,7 +96,7 @@ const checkRolesExisted = (req, res, next) => {
 
     // Si roles está presente en el request
     if (req.body.role) {
-        // Convertir a array si es string (soporta ambos formatos)
+        // guardar los roles en un array soporta un solo rol o multiples en el caso un usuario tenga varios roles asignado
         const roles = Array.isArray(req.body.role) ? req.body.role: [req.body.role];
         
         // Filtrar roles que no están en la lista valida 
