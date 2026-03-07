@@ -5,7 +5,7 @@ encripta la contraseña
 manejo de roles, (admin, coordinador, auxiliar)
 */
 
-const mongoose = require('mongosee');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 //Estructura de la base de datos para  los usuarios

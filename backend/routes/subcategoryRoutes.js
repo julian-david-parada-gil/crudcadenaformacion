@@ -1,51 +1,60 @@
 /**
- * Rutas de subcategories
- * defiene los endpoints CRUD para la gestion de subcategorias
- * las subcategorias son contenedores padres de subcategorias y productos 
+ * Rutas de subcategorias
+ * define los endpoints CRUD para la gestion de subcategorias
+ * las subcategorias son contenedores padres de productos
  * endpoints:
- * Post /api/categories crea una nueva categoria 
- * Get / api/categories obtiene todas las categorias 
- * Get / api/categories/:id obtiene una categoria por id 
- * Put /api/categories/:id actualiza una categoria por id 
- * Delete /api/categoies/:id elimina una categoria /desactivar 
+ * POST /api/subcategories crea una nueva categoria
+ * GET /api/subcategories obtiene todas las subcategorias
+ * GET /api/subcategories/:id obtiene una subcategoria por id
+ * PUT /api/subcategories/:id actualiza una subcategoria por id
+ * DELETE /api/subcategories/:id elimina una subcategoria / desactivar
  */
 
 const express = require('express');
-const router =express.Router();
-const subcategoryController = require('../Controllers/subcategoryController');
+const router = express.Router();
+const subcategoryController = require('../controllers/subcategoryController');
 const { check } = require('express-validator');
-const { verifyToken } = require('../midleswares/auhJwt');
-const {checkRole} = require('../middlewares/Role');
+const { verifyToken } = require('../middleswares/authJwt');
+const { checkRole } = require('../middleswares/role');
 
 const validateSubcategory = [
     check('name')
-    .not().isEmpty()
-    .withmessage('el nombre es obligatorio'),
-
-    check('desciption')
-    .not().isEmpty()
-    .withmessage('la descripcion es obligatorio'),
-
+        .not()
+        .isEmpty()
+        .withMessage('El nombre es obligatorio'),
+    
+    check('description')
+        .not()
+        .isEmpty()
+        .withMessage('La descripcion es obligatoria'),
+    
     check('category')
-    .not().isEmpty()
-    .withmessage('la categoria es obligatorio'),
+        .not()
+        .isEmpty()
+        .withMessage('La categoria es obligatoria'),
 ]
-//rutas CRUD
+// Rutas CRUD
 
 router.post('/',
     verifyToken,
-    checkRole(['admin' , 'coordinador']),
+    checkRole(['admin','coordinador', 'auxiliar']),
     validateSubcategory,
     subcategoryController.createSubcategory
 );
 
-router.get('/', subcategoryController.getSubcategories);
-
-router.get('/:id', subcategoryController.getSubcategoriesById);
+router.get('/', 
+    verifyToken,
+    subcategoryController.getSubcategories
+);
+router.get('/:id', 
+    verifyToken,
+    subcategoryController.getSubcategoryById
+);
 
 router.put('/:id',
     verifyToken,
-    checkRole(['admin' , 'coordinador']),
+    checkRole(['admin','coordinador']),
+    validateSubcategory,
     subcategoryController.updateSubcategory
 );
 

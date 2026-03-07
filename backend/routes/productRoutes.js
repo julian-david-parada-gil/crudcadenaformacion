@@ -1,68 +1,74 @@
 /**
  * Rutas de productos
- * defiene los endpoints CRUD para la gestion de productos
- * los productos son elemntos de la subcategoria
+ * define los endpoints CRUD para la gestion de productos
+ * los productos son contenedores hijos de categorias
  * endpoints:
- * Post /api/product crea una nuevo producto 
- * Get / api/product obtiene todas los productos 
- * Get / api/product/:id obtiene unm producto por id 
- * Put /api/product/:id actualiza un producto por id 
- * Delete /api/product/:id elimina un producto /desactivar 
+ * POST /api/products crea un nuevo producto
+ * GET /api/products obtiene todos los productos
+ * GET /api/products/:id obtiene un producto por id
+ * PUT /api/products/:id actualiza un producto por id
+ * DELETE /api/products/:id elimina un producto / desactivar
  */
 
 const express = require('express');
-const router =express.Router();
-const productController = require('../Controllers/productController');
+const router = express.Router();
+const productController = require('../controllers/productController');
 const { check } = require('express-validator');
 const { verifyToken } = require('../middleswares/authJwt');
-const {checkRole} = require('../middlewares/Role');
-
+const { checkRole } = require('../middleswares/role');
+    
 const validateProduct = [
     check('name')
-    .not().isEmpty()
-    .withmessage('el nombre es obligatorio'),
-
-    check('desciption')
-    .not().isEmpty()
-    .withmessage('la descripcion es obligatorio'),
-
+        .not()
+        .isEmpty()
+        .withMessage('El nombre es obligatorio'),
+    
+    check('description')
+        .not()
+        .isEmpty()
+        .withMessage('La descripcion es obligatoria'),
+    
     check('price')
-    .not().isEmpty()
-    .withmessage('el precio es obligatorio'),
+        .not()
+        .isEmpty()
+        .withMessage('El precio es obligatorio'),
 
     check('stock')
-    .not().isEmpty()
-    .withmessage('el stock es obligatorio'),
+        .not()
+        .isEmpty()
+        .withMessage('El stock es obligatorio'),
+
+    check('subcategory')
+        .not()
+        .isEmpty()
+        .withMessage('La subcategoria es obligatoria'),
 
     check('category')
-    .not().isEmpty()
-    .withmessage('la categoria es obligatorio'),
-
-    check('subCategory')
-    .not().isEmpty()
-    .withmessage('la subCategoria es obligatorio'),
-    
+        .not()
+        .isEmpty()
+        .withMessage('La categoria es obligatoria'),
 ]
-//rutas CRUD
+// Rutas CRUD
 
 router.post('/',
     verifyToken,
-    checkRole(['admin' , 'coordinador', 'auxiliar']),
+    checkRole(['admin','coordinador', 'auxiliar']),
     validateProduct,
     productController.createProduct
 );
 
-router.get('/',
+router.get('/', 
     verifyToken,
-    productController.getProducts);
-
-router.get('/', productController.getProducts);
-
-router.get('/:id', productController.getProductById);
+    productController.getProducts
+);
+router.get('/:id', 
+    verifyToken,
+    productController.getProductById
+);
 
 router.put('/:id',
     verifyToken,
-    checkRole(['admin' , 'coordinador']),
+    checkRole(['admin','coordinador']),
     validateProduct,
     productController.updateProduct
 );
