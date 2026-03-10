@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         lowercase: true,// convierte a minusculas
         trim:  true, // elimina espacios
-        match: [/\S+@\S+\.\/S+/, 'El correo no es valido'] // valida el patron email
+        match: [/\S+@\S+\.\S+/, 'El correo no es valido'] // valida el patron email
 
     },
     //Contraseña - requerida, minimo 6 caracteres 

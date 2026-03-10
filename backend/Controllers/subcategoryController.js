@@ -90,7 +90,7 @@ exports.getSubcategories = async (req, res) => {
             active: { $ne: false }
         };
 
-        const subcategories = await Subategory.find(activeFilter).populate('category', 'name');
+        const subcategories = await Subcategory.find(activeFilter).populate('category', 'name');
         res.status(200).json({
             success: true,
             data: subcategories

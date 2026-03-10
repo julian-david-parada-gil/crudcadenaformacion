@@ -128,11 +128,11 @@ exports.getUserById = async (req, res) => {
 
 exports.createUser = async (req, res) => {
     try {
-        const { userName, email, password, role } = req.body;
+        const { username, email, password, role } = req.body;
         
         // Crear suario nuevo
         const user = new User({
-            userName,
+            username,
             email,
             password,
             role
