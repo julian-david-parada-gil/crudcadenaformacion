@@ -169,14 +169,22 @@ exports.updateCategory = async (req, res) => {
         const { name, description } = req.body;
         const updateData = {};
 
-        // Solo actualizar campos que fueron enviados
+        // validar que venga al menos un campo
+        if (!name && !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe enviar al menos name o description para actualizar'
+            });
+        }
+
         if (name) {
             updateData.name = name.trim();
-            // Verificar si el nuevo nombre ya existe en otra categoria
+
             const existing = await Category.findOne({
                 name: updateData.name,
-                _id: { $ne: req.params.id } // Asegurar que el nombre no sea el mismo id
+                _id: { $ne: req.params.id }
             });
+
             if (existing) {
                 return res.status(400).json({
                     success: false,
@@ -189,14 +197,13 @@ exports.updateCategory = async (req, res) => {
             updateData.description = description.trim();
         }
 
-        // Actualizar la categoria en la base de datos
-        const updateCategory = await Category.findByIdAndUpdate(
+        const updatedCategory = await Category.findByIdAndUpdate(
             req.params.id,
             updateData,
             { new: true, runValidators: true }
         );
 
-        if (!updateCategory) {
+        if (!updatedCategory) {
             return res.status(404).json({
                 success: false,
                 message: 'Categoria no encontrada'
@@ -206,10 +213,20 @@ exports.updateCategory = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Categoria actualizada exitosamente',
-            data: updateCategory
+            data: updatedCategory
         });
+
     } catch (error) {
+
         console.error('Error en updateCategory', error);
+
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ya existe una categoria con ese nombre'
+            });
+        }
+
         res.status(500).json({
             success: false,
             message: 'Error al actualizar la categoria',
@@ -303,7 +320,7 @@ exports.deleteCategory = async (req, res) => {
         }
     } catch (error) {
         console.error('Error en deleteCategory:', error);
-        res.status(500),json({
+        res.status(500).json({
             success: false,
             message:'Error al desactivar la categoria',
             error: error.message

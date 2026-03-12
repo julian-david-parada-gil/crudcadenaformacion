@@ -63,7 +63,7 @@ const productSchema = new mongoose.Schema({
 
     // Quien creo el producto
     // Referencia de User no requerido
-    createddB: {
+    createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User' // puede ser poblado para mostrar los usuarios
     },

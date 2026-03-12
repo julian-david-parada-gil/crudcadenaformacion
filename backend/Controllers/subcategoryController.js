@@ -152,11 +152,21 @@ exports.getSubcategoryById = async (req, res) => {
  */
 exports.updateSubcategory = async (req, res) => {
     try {
+
         const { name, description, category } = req.body;
 
-        // Verificar si cambia la categoria padre
+        // validar que al menos un campo venga
+        if (!name && !description && !category) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe enviar al menos un campo para actualizar'
+            });
+        }
+
+        // validar cambio de categoria
         if (category) {
-            const parentCategory = await Category.findById(Category);
+            const parentCategory = await Category.findById(category);
+
             if (!parentCategory) {
                 return res.status(400).json({
                     success: false,
@@ -165,18 +175,19 @@ exports.updateSubcategory = async (req, res) => {
             }
         }
 
-        // Construir objeto de actualizacion solo en campos enviados
-        const updateSubcategory = await Subcategory.findByIdAndUpdate(
+        const updateData = {};
+
+        if (name) updateData.name = name.trim();
+        if (description) updateData.description = description.trim();
+        if (category) updateData.category = category;
+
+        const updatedSubcategory = await Subcategory.findByIdAndUpdate(
             req.params.id,
             updateData,
-            { name: name ? name.trim() : undefined,
-                description: description ? description.trim() : undefined,
-                category
-            },
             { new: true, runValidators: true }
         );
 
-        if (!updateSubcategory) {
+        if (!updatedSubcategory) {
             return res.status(404).json({
                 success: false,
                 message: 'Subcategoria no encontrada'
@@ -186,14 +197,24 @@ exports.updateSubcategory = async (req, res) => {
         res.status(200).json({
             success: true,
             message: 'Subcategoria actualizada exitosamente',
-            data: updateSubcategory
+            data: updatedSubcategory
         });
+
     } catch (error) {
+
         console.error('Error en actualizar subcategoria', error);
+
+        // manejo de duplicados
+        if (error.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: 'Ya existe una subcategoria con ese nombre'
+            });
+        }
+
         res.status(500).json({
             success: false,
-            message: 'Error al actualizar la subcategoria',
-            error: error.message
+            message: 'Error al actualizar la subcategoria'
         });
     }
 };
@@ -268,7 +289,7 @@ exports.deleteSubcategory = async (req, res) => {
         }
     } catch (error) {
         console.error('Error al desactivar la subcategoria:', error);
-        res.status(500),json({
+        res.status(500).json({
             success: false,
             message:'Error al desactivar la subcategoria',
             error: error.message

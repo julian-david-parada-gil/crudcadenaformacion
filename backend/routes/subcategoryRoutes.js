@@ -18,17 +18,26 @@ const { verifyToken } = require('../middleswares/authJwt');
 const { checkRole } = require('../middleswares/role');
 
 const validateSubcategory = [
+    check('name').not().isEmpty().withMessage('El nombre es obligatorio'),
+    check('description').not().isEmpty().withMessage('La descripcion es obligatoria'),
+    check('category').not().isEmpty().withMessage('La categoria es obligatoria'),
+];
+
+const validateUpdateSubcategory = [
     check('name')
+        .optional()
         .not()
         .isEmpty()
         .withMessage('El nombre es obligatorio'),
     
     check('description')
+        .optional()
         .not()
         .isEmpty()
         .withMessage('La descripcion es obligatoria'),
     
     check('category')
+        .optional()
         .not()
         .isEmpty()
         .withMessage('La categoria es obligatoria'),
@@ -37,7 +46,7 @@ const validateSubcategory = [
 
 router.post('/',
     verifyToken,
-    checkRole(['admin','coordinador', 'auxiliar']),
+    checkRole('admin','coordinador', 'auxiliar'),
     validateSubcategory,
     subcategoryController.createSubcategory
 );
@@ -53,14 +62,14 @@ router.get('/:id',
 
 router.put('/:id',
     verifyToken,
-    checkRole(['admin','coordinador']),
-    validateSubcategory,
+    checkRole('admin','coordinador'),
+    validateUpdateSubcategory,
     subcategoryController.updateSubcategory
 );
 
 router.delete('/:id',
     verifyToken,
-    checkRole(['admin']),
+    checkRole('admin'),
     subcategoryController.deleteSubcategory
 );
 
