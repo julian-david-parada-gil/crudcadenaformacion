@@ -12,7 +12,7 @@
 
 const express = require('express');
 const router = express.Router();
-const subcategoryController = require('../controllers/subcategoryController');
+const subcategoryController = require('../Controllers/subcategoryController');
 const { check } = require('express-validator');
 const { verifyToken } = require('../middleswares/authJwt');
 const { checkRole } = require('../middleswares/role');

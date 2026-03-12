@@ -74,7 +74,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
     try {
         // Por defecto solo mostrar usuarios activos
-        const user = await user.findById(req.params.id).select('-password');
+        const user = await User.findById(req.params.id).select('-password');
 
         if (!user) {
             return res.status(404).json({

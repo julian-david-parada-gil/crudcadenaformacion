@@ -12,7 +12,7 @@
 
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
+const productController = require('../Controllers/productController');
 const { check } = require('express-validator');
 const { verifyToken } = require('../middleswares/authJwt');
 const { checkRole } = require('../middleswares/role');
@@ -52,7 +52,7 @@ const validateProduct = [
 
 router.post('/',
     verifyToken,
-    checkRole(['admin','coordinador', 'auxiliar']),
+    checkRole('admin','coordinador', 'auxiliar'),
     validateProduct,
     productController.createProduct
 );
@@ -68,14 +68,14 @@ router.get('/:id',
 
 router.put('/:id',
     verifyToken,
-    checkRole(['admin','coordinador']),
+    checkRole('admin','coordinador'),
     validateProduct,
     productController.updateProduct
 );
 
 router.delete('/:id',
     verifyToken,
-    checkRole(['admin']),
+    checkRole('admin'),
     productController.deleteProduct
 );
 
