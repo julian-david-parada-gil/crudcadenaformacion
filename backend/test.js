@@ -5,6 +5,8 @@
  */
 
 const API_URL = 'http://localhost:3000/api'; // URL base del servidor; todas las peticiones se enviarán a este servidor
+const ADMIN_USERNAME = process.env.TEST_ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'admin12345';
 let token = null;         // Almacena el JWT del admin tras el login; se incluye en todas las peticiones autenticadas
 let categoryId = null;    // Almacena el _id de la categoría creada durante las pruebas
 let subcategoryId = null; // Almacena el _id de la subcategoría creada durante las pruebas
@@ -58,18 +60,23 @@ async function runTests() { // Función principal que ejecuta todos los tests en
 
   // Login - Admin
   let res = await request('POST', '/auth/signin', { // Envía petición de login con credenciales de admin
-    username: 'admin',      // Usuario admin creado con seedUsers.js
-    password: 'admin12345'    // Contraseña del admin
+    username: ADMIN_USERNAME,      // Usuario admin configurable por variable de entorno
+    password: ADMIN_PASSWORD       // Contraseña admin configurable por variable de entorno
   });
   log('Login admin', res.ok && res.status === 200, `(Status: ${res.status})`); // Verifica que el login respondió 200 OK
   if (res.ok) { // Si el login fue exitoso
     token = res.data.token; // Guarda el JWT para usarlo en todas las peticiones siguientes
     log('Token obtenido', !!token, `Token: ${token?.substring(0, 20)}...`); // Verifica que el token no sea null/undefined
+  } else {
+    error('/auth/signin', res);
+    console.log('   Sugerencia: define TEST_ADMIN_USERNAME y TEST_ADMIN_PASSWORD o ejecuta seedUsers.js');
+    console.log('\n\u26d4 Pruebas detenidas: sin token de autenticación no se pueden validar rutas protegidas.');
+    return;
   }
 
   // Login fallido
   res = await request('POST', '/auth/signin', { // Envía petición de login con contraseña incorrecta
-    username: 'admin',
+    username: ADMIN_USERNAME,
     password: 'wrongpassword'  // Contraseña incorrecta para probar que el API la rechaza
   });
   log('Login fallido rechazado', !res.ok && res.status === 401, `(Status: ${res.status})`); // Verifica que el API retornó 401
@@ -89,7 +96,7 @@ async function runTests() { // Función principal que ejecuta todos los tests en
   const newUser = { // Datos del usuario de prueba con timestamp para evitar duplicados
     username: `testuser${timestamp}`, // Username único gracias al timestamp
     email: `test${timestamp}@example.com`, // Email único gracias al timestamp
-    password: 'test123',  // Contraseña del usuario de prueba
+    password: 'test123456',  // Contraseña del usuario de prueba
     role: 'auxiliar'      // Rol menos privilegiado
   };
   res = await request('POST', '/users', newUser); // Petición POST /api/users con datos del nuevo usuario
@@ -148,7 +155,7 @@ async function runTests() { // Función principal que ejecuta todos los tests en
 
   // Actualizar categoría
   if (categoryId) { // Solo ejecuta si la categoría fue creada exitosamente
-    res = await request('PUT', `/categories/${categoryId}`, { name: 'Updated Category' }); // Petición PUT para cambiar el nombre
+    res = await request('PUT', `/categories/${categoryId}`, { name: `Updated Category ${timestamp}` }); // Petición PUT para cambiar el nombre
     log('PUT /categories/:id (actualizar)', res.ok && res.status === 200, `(Status: ${res.status})`); // Verifica 200 OK
   }
 
@@ -187,7 +194,7 @@ async function runTests() { // Función principal que ejecuta todos los tests en
 
   // Actualizar subcategoría
   if (subcategoryId) { // Solo ejecuta si la subcategoría fue creada exitosamente
-    res = await request('PUT', `/subcategories/${subcategoryId}`, { name: 'Updated Subcategory' }); // Petición PUT para cambiar nombre
+    res = await request('PUT', `/subcategories/${subcategoryId}`, { name: `Updated Subcategory ${timestamp}` }); // Petición PUT para cambiar nombre
     log('PUT /subcategories/:id (actualizar)', res.ok && res.status === 200, `(Status: ${res.status})`); // Verifica 200 OK
   }
 
