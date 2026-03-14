@@ -59,17 +59,17 @@ const isAdmin = (req, res, next) => {
     return checkRole('admin')(req, res, next);
 };
 // verificar si el usuario es auxiliar 
-const isAuxiliar = (req, res, next) => {
-    return checkRole('Auxiliar')(req, res, next);
+const isauxiliar = (req, res, next) => {
+    return checkRole('auxiliar')(req, res, next);
 };
 // verificar si el usuario es coordinador
-const isCoordinador = (req, res, next) => {
-    return checkRole('Coordinador')(req, res, next);
+const iscoordinador = (req, res, next) => {
+    return checkRole('coordinador')(req, res, next);
 };
 //modulos a exportar 
 module.exports = {
     checkRole,
     isAdmin,
-    isCoordinador,
-    isAuxiliar
+    iscoordinador,
+    isauxiliar
 }

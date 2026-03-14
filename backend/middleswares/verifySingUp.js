@@ -6,7 +6,7 @@
 
 const User = require('../models/User');
 
-const ROLES = ['admin', 'coordinador', 'auxiliar'];
+const roles = ['admin', 'coordinador', 'auxiliar'];
 
 const checkDuplicateUsernameOrEmail = async (req, res, next) => {
     try {
@@ -38,13 +38,11 @@ const checkDuplicateUsernameOrEmail = async (req, res, next) => {
 
 const checkRolesExisted = (req, res, next) => {
     if (req.body.role) {
-        for (let i = 0; i < req.body.role.length; i++) {
-            if (!ROLES.includes(req.body.role[i])) {
-                return res.status(400).json({
-                    success: false,
-                    message: `Rol no permitido: ${req.body.role[i]}`
-                });
-            }
+        if (!roles.includes(req.body.role)) {
+            return res.status(400).json({
+                success: false,
+                message: `Rol no permitido: ${req.body.role}`
+            });
         }
     }
     next();
